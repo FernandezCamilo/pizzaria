@@ -1,5 +1,7 @@
 // Importando o express
 const express = require('express')
+const session = require('express-session')
+
 const RegistraHoraDeAcesso = require('./middlewares/RegistraHoraDeAcesso')
 
 // Criando a aplicação express
@@ -13,9 +15,21 @@ app.set('view engine', 'ejs')
 //# seja o padrão
 // app.set('views',"caminho para pasta views")
 
+// Definção do middfleware que configura o cookie da session
+app.use(
+  session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+  })
+)
+
 // Verificando se a requisição é para um arquivo da pasta public
 // caso seja, mande esse arquivo
 app.use(express.static('public'))
+
+// Processa os formulários do tipo pos e organiza as info no req.body
+app.use(express.urlencoded({ extended: false }))
 
 // Declaração de middlware global
 app.use(RegistraHoraDeAcesso)

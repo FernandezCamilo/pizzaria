@@ -4,7 +4,15 @@ const pizzas = require('../database/pizzas.json')
 // Criando e exportando o objeto literal que conterá todas as funções (controllers)
 module.exports = {
   index: (req, res) => {
-    res.render('index.ejs', { pizzas })
+    // Verufucar se a session pizzas está setada.
+    // Caso esteja, levantar a quantidade de pizzas
+    // Caso não esteja, quantidade = 0
+    let quantidade = 0
+    if (req.session.pizzas) {
+      quantidade = req.session.pizzas.length
+    }
+
+    res.render('index.ejs', { pizzas, quantidade })
   },
 
   show: (req, res) => {
@@ -19,6 +27,10 @@ module.exports = {
   },
 
   search: (req, res) => {
+    let quantidade = 0
+    if (req.session.pizzas) {
+      quantidade = req.session.pizzas.length
+    }
     //Levantar o trecho que está sendo buscado (req.query.q)
     let termoBuscado = req.query.q
     //Filtrar as pizzas para obter somente as pizzas com esse trecho
@@ -26,6 +38,25 @@ module.exports = {
       p.nome.toLowerCase().includes(termoBuscado.toLowerCase())
     )
     //retornar a view index.ejs, passando para ela somente as pizzas filtradas
-    res.render('index.ejs', { pizzas: pizzasFiltradas })
+    res.render('index.ejs', { pizzas: pizzasFiltradas, quantidade })
+  },
+
+  addCart: (req, res) => {
+    // Verificar se existe pizza
+    // caso haja, basta adicionar ao array
+    // caso não haja a gente cria um array
+    if (req.session.pizzas) {
+      req.session.pizzas.push(req.body.aEscolhida)
+    } else {
+      req.session.pizzas = [req.body.aEscolhida]
+    }
+    res.redirect('/pizzas')
+  },
+
+  showCart: (req, res) => {
+    // Levantar do array de pizzas as pezzas que estão na session
+
+    // Renderizar pizzas.ejs, passando as pizzas que estão no carrinho, e não os isd;
+    res.render('cart.ejs')
   }
 }
