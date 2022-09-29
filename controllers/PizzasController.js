@@ -55,8 +55,17 @@ module.exports = {
 
   showCart: (req, res) => {
     // Levantar do array de pizzas as pezzas que estão na session
+    // ["1", "3"] ====> [{id:1, nome: "Pepperoni", ptrco:50}, {id:3, nome:"fracatu", preco: 32}]
+    let idsNoCarrinho = req.session.pizzas
+    let getPizzaById = id => {
+      return pizzas.find(p => p.id == id)
+    }
+    let pizzasNoCarrinho = idsNoCarrinho.map(getPizzaById)
+
+    // Levantar se o usuário está logado
+    let usuarioLogado = req.session.usuario !== undefined
 
     // Renderizar pizzas.ejs, passando as pizzas que estão no carrinho, e não os isd;
-    res.render('cart.ejs')
+    res.render('cart.ejs', { pizzasNoCarrinho, usuarioLogado })
   }
 }
