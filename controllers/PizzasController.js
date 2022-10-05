@@ -56,6 +56,8 @@ module.exports = {
   showCart: (req, res) => {
     // Levantar do array de pizzas as pezzas que estão na session
     // ["1", "3"] ====> [{id:1, nome: "Pepperoni", ptrco:50}, {id:3, nome:"fracatu", preco: 32}]
+    if (req.session.pizza == undefined) {
+    }
     let idsNoCarrinho = req.session.pizzas
     let getPizzaById = id => {
       return pizzas.find(p => p.id == id)
